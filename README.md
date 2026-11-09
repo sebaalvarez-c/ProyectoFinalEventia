@@ -1,33 +1,33 @@
 # Eventia
 
-Android app to discover events and venues, view them on a map, save favorites for offline access and sign up for events with limited spots.
+Aplicación Android para descubrir eventos y lugares, verlos en un mapa, guardar favoritos para consultarlos sin conexión e inscribirse a eventos con cupos limitados.
 
-Final project for *Programación de Aplicaciones Móviles 1*. The backend (REST API) is provided by the course; only the Android client is built here.
+Proyecto final de *Programación de Aplicaciones Móviles 1*. El backend (API REST) lo proporciona la asignatura; aquí solo se desarrolla el cliente Android.
 
-> Work in progress.
+> Proyecto en desarrollo.
 
-## Features (planned)
+## Funcionalidades (planificadas)
 
-- **Catalog:** event list, detail, search by name, category filter and manual refresh.
-- **Venues:** venue list and detail with upcoming events.
-- **Favorites and offline:** favorites and catalog cache stored with Room.
-- **Account and sign-ups:** register, login, logout, sign up for / cancel events, "my sign-ups".
-- **Map:** markers for events with valid coordinates, summary sheet and external directions.
+- **Catálogo:** lista de eventos, detalle, búsqueda por nombre, filtro por categoría y actualización manual.
+- **Lugares:** lista y detalle de lugares con sus próximos eventos.
+- **Favoritos y sin conexión:** favoritos y caché del catálogo guardados con Room.
+- **Cuenta e inscripciones:** registro, inicio y cierre de sesión, inscripción y cancelación a eventos, "mis inscripciones".
+- **Mapa:** marcadores de eventos con coordenadas válidas, hoja de resumen e indicaciones en una app externa.
 
-## Tech stack
+## Tecnologías
 
-- Kotlin and Jetpack Compose (Material 3)
-- MVVM with Repository pattern, `StateFlow`
+- Kotlin y Jetpack Compose (Material 3)
+- MVVM con patrón Repository y `StateFlow`
 - Retrofit + GSON
-- Room and DataStore
+- Room y DataStore
 - Hilt
 - Coil
 - Navigation Compose
-- Maps library: to be defined
+- Biblioteca de mapas: por definir
 
-## Versions
+## Versiones
 
-| Item | Version |
+| Elemento | Versión |
 | --- | --- |
 | Android Gradle Plugin | 9.3.3 |
 | Gradle | 9.5.0 |
@@ -37,24 +37,24 @@ Final project for *Programación de Aplicaciones Móviles 1*. The backend (REST 
 | minSdk | 31 |
 | JDK (source/target) | 11 |
 
-Android Studio and JDK versions used to build: to be documented.
+Versiones de Android Studio y JDK usadas para compilar: por documentar.
 
-## Setup
+## Configuración
 
-1. Clone the repository.
-2. Open it with Android Studio.
-3. Let Gradle sync and run the `app` configuration on an emulator or device.
+1. Clonar el repositorio.
+2. Abrirlo con Android Studio.
+3. Esperar la sincronización de Gradle y ejecutar la configuración `app` en un emulador o dispositivo.
 
-API base URL and test credentials: to be documented.
+URL base de la API y credenciales de prueba: por documentar.
 
-## Architecture
+## Arquitectura
 
-To be documented.
+Por documentar.
 
-## Verified scenarios
+## Escenarios verificados
 
-To be documented.
+Por documentar.
 
-## Known limitations
+## Limitaciones conocidas
 
-To be documented.
+Por documentar.
