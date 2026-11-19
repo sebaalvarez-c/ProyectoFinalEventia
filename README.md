@@ -25,29 +25,37 @@ Aplicación Android para descubrir eventos y lugares, desarrollada como proyecto
 
 ## Configuración de la API
 
-El backend corre en la máquina de desarrollo con `php artisan serve` (puerto 8000 por defecto).
+El backend es una API Node.js/Express que corre en la PC de desarrollo en el puerto 8000.
 
-La URL base se configura en `app/src/main/java/.../di/NetworkModule.kt`:
+### Emulador Android
 
-```kotlin
-// Emulador Android (mapea al localhost de la PC anfitriona)
-private const val BASE_URL = "http://10.0.2.2:8000/api/"
+Usar el tunnel de ADB para que el emulador acceda a `localhost` de la PC:
 
-// Dispositivo físico en la misma red
-// private const val BASE_URL = "http://192.168.X.X:8000/api/"
+```bash
+adb reverse tcp:8000 tcp:8000
 ```
 
-**Credenciales de prueba** (seed incluido en el backend):
+La URL base en `di/NetworkModule.kt` está configurada como:
+
+```kotlin
+private const val BASE_URL = "http://localhost:8000/api/"
+```
+
+### Dispositivo físico
+
+Reemplazar `localhost` con la IP local de la PC (ej. `192.168.1.X`) y actualizar `BASE_URL`.
+
+**Credenciales de prueba:**
 - Email: `ana@eventia.test`
 - Contraseña: `eventia123`
 
-Las solicitudes autenticadas envían `Authorization: Bearer <token>` de forma automática mediante `AuthInterceptor`. Si el servidor responde `401`, la sesión local se limpia y la app redirige al inicio de sesión.
+Las solicitudes autenticadas envían `Authorization: Bearer <token>` automáticamente mediante `AuthInterceptor`. Si el servidor responde `401`, la sesión local se limpia y la app redirige al inicio de sesión sin cerrarse.
 
 ## Configuración del mapa
 
-El mapa usa **osmdroid** (OpenStreetMap), que no requiere API key. Los tiles se descargan de internet de forma automática en el primer uso. El mapa funciona sin conexión únicamente para los tiles ya descargados en caché por el sistema operativo.
+El mapa usa **osmdroid** con un proxy de tiles propio en el backend. Los tiles se sirven en `GET /tiles/:z/:x/:y` y el backend los obtiene de ESRI World Street Map (gratuito, sin API key).
 
-No se requiere ningún paso de configuración adicional para los mapas.
+Requiere que el backend esté corriendo y el tunnel ADB activo. No se necesita ninguna clave de API externa.
 
 ## Arquitectura
 
