@@ -1,60 +1,125 @@
 # Eventia
 
-Aplicación Android para descubrir eventos y lugares, verlos en un mapa, guardar favoritos para consultarlos sin conexión e inscribirse a eventos con cupos limitados.
-
-Proyecto final de *Programación de Aplicaciones Móviles 1*. El backend (API REST) lo proporciona la asignatura; aquí solo se desarrolla el cliente Android.
-
-> Proyecto en desarrollo.
-
-## Funcionalidades (planificadas)
-
-- **Catálogo:** lista de eventos, detalle, búsqueda por nombre, filtro por categoría y actualización manual.
-- **Lugares:** lista y detalle de lugares con sus próximos eventos.
-- **Favoritos y sin conexión:** favoritos y caché del catálogo guardados con Room.
-- **Cuenta e inscripciones:** registro, inicio y cierre de sesión, inscripción y cancelación a eventos, "mis inscripciones".
-- **Mapa:** marcadores de eventos con coordenadas válidas, hoja de resumen e indicaciones en una app externa.
-
-## Tecnologías
-
-- Kotlin y Jetpack Compose (Material 3)
-- MVVM con patrón Repository y `StateFlow`
-- Retrofit + GSON
-- Room y DataStore
-- Hilt
-- Coil
-- Navigation Compose
-- Biblioteca de mapas: por definir
+Aplicación Android para descubrir eventos y lugares, desarrollada como proyecto final de Programación de Aplicaciones Móviles 1.
 
 ## Versiones
 
-| Elemento | Versión |
-| --- | --- |
-| Android Gradle Plugin | 9.3.3 |
-| Gradle | 9.5.0 |
-| Kotlin | 2.2.10 |
-| Compose BOM | 2026.02.01 |
-| compileSdk / targetSdk | 37 |
-| minSdk | 31 |
-| JDK (source/target) | 11 |
+| Herramienta / Librería       | Versión        |
+|------------------------------|----------------|
+| Android Studio               | Meerkat 2025.1 o superior (requiere AGP 9.x) |
+| JDK                          | 17 o superior  |
+| Android Gradle Plugin (AGP)  | 9.3.3          |
+| Kotlin                       | 2.2.10         |
+| compileSdk / targetSdk       | 37             |
+| minSdk                       | 31 (Android 12)|
+| Jetpack Compose BOM           | 2026.02.01     |
+| Hilt                         | 2.60.1         |
+| Retrofit                     | 2.11.0         |
+| OkHttp                       | 4.12.0         |
+| Room                         | 2.7.1          |
+| DataStore Preferences        | 1.1.5          |
+| Navigation Compose           | 2.9.0          |
+| Coil                         | 2.7.0          |
+| osmdroid                     | 6.1.20         |
+| Coroutines                   | 1.10.2         |
 
-Versiones de Android Studio y JDK usadas para compilar: por documentar.
+## Configuración de la API
 
-## Configuración
+El backend corre en la máquina de desarrollo con `php artisan serve` (puerto 8000 por defecto).
 
-1. Clonar el repositorio.
-2. Abrirlo con Android Studio.
-3. Esperar la sincronización de Gradle y ejecutar la configuración `app` en un emulador o dispositivo.
+La URL base se configura en `app/src/main/java/.../di/NetworkModule.kt`:
 
-URL base de la API y credenciales de prueba: por documentar.
+```kotlin
+// Emulador Android (mapea al localhost de la PC anfitriona)
+private const val BASE_URL = "http://10.0.2.2:8000/api/"
+
+// Dispositivo físico en la misma red
+// private const val BASE_URL = "http://192.168.X.X:8000/api/"
+```
+
+**Credenciales de prueba** (seed incluido en el backend):
+- Email: `ana@eventia.test`
+- Contraseña: `eventia123`
+
+Las solicitudes autenticadas envían `Authorization: Bearer <token>` de forma automática mediante `AuthInterceptor`. Si el servidor responde `401`, la sesión local se limpia y la app redirige al inicio de sesión.
+
+## Configuración del mapa
+
+El mapa usa **osmdroid** (OpenStreetMap), que no requiere API key. Los tiles se descargan de internet de forma automática en el primer uso. El mapa funciona sin conexión únicamente para los tiles ya descargados en caché por el sistema operativo.
+
+No se requiere ningún paso de configuración adicional para los mapas.
 
 ## Arquitectura
 
-Por documentar.
+El proyecto sigue **Clean Architecture** con **MVVM** y separación en tres capas:
 
-## Escenarios verificados
+```
+ui/          → Composables + ViewModels (StateFlow)
+domain/      → Modelos de dominio + interfaces de repositorio
+data/        → Implementaciones de repositorio, Room, Retrofit, DataStore
+```
 
-Por documentar.
+Los DTOs de red nunca llegan a la UI: se transforman a modelos de dominio en la capa de datos. Los ViewModels exponen un único `UiState` via `StateFlow` y no dependen de Retrofit ni Room directamente.
+
+```
+com.example.proyecto_final_eventia/
+├── data/
+│   ├── local/          Room (EventiaDatabase, DAOs, entidades, DataStore)
+│   ├── remote/         Retrofit (EventiaApi, DTOs, AuthInterceptor)
+│   └── repository/     Implementaciones de repositorio
+├── di/                 Módulos Hilt (NetworkModule, DatabaseModule, RepositoryModule)
+├── domain/
+│   ├── model/          Event, Venue, VenueSummary, Category, User
+│   └── repository/     Interfaces EventRepository, VenueRepository, AuthRepository
+├── navigation/         EventiaNavHost, Screen (rutas)
+├── ui/
+│   ├── auth/           Login, Register
+│   ├── components/     EventCard, VenueCard, UiStateWrapper
+│   ├── eventdetail/    Detalle de evento + inscripción
+│   ├── explore/        Catálogo (Eventos / Lugares) + búsqueda + filtros
+│   ├── favorites/      Favoritos offline
+│   ├── map/            Mapa con marcadores (osmdroid)
+│   ├── profile/        Perfil + mis inscripciones
+│   ├── theme/          Color, Type, Theme
+│   └── venuedetail/    Detalle de lugar + próximos eventos
+└── util/               NetworkMonitor, DateFormatter
+```
+
+## Cómo compilar y ejecutar
+
+1. Asegurarse de que el backend esté corriendo (`php artisan serve`).
+2. Abrir el proyecto en Android Studio Meerkat o superior.
+3. Verificar que la `BASE_URL` en `NetworkModule.kt` corresponda al entorno (emulador o dispositivo físico).
+4. Ejecutar en un emulador API 31+ o dispositivo físico con Android 12+.
+
+No se requiere ninguna clave de API ni archivo de configuración externo.
+
+## Escenarios verificados manualmente
+
+| Escenario | Resultado esperado |
+|-----------|-------------------|
+| Inicio con sesión guardada | App abre directamente en Explorar |
+| Inicio sin sesión | App abre en Login |
+| Búsqueda + filtro de categoría combinados | Lista muestra solo coincidencias de ambos criterios |
+| Limpiar filtros | Lista vuelve al catálogo completo |
+| Sin conexión (modo avión) | Catálogo muestra datos en caché con aviso "Sin conexión · datos de hace Xh" |
+| Sin conexión — actualizar catálogo | Mantiene datos en caché, informa el error sin borrar la lista |
+| Favorito persiste al cerrar app | El favorito reaparece al relanzar |
+| Quitar favorito desde la lista | Aparece opción "Deshacer" |
+| Favorito accesible sin conexión | La pantalla Favoritos muestra el evento; su detalle básico también |
+| Inscribirse a evento con cupos | Cupo disponible se reduce; evento aparece en Perfil → Próximos |
+| Inscribirse a evento sin cupos (409) | Diálogo informa "Sin cupos disponibles" |
+| Cancelar inscripción | Cupo se restaura; evento desaparece de Perfil |
+| Sin sesión → botón Asistir | Redirige a Login; al iniciar sesión vuelve al detalle del evento |
+| Token expirado (401) | Sesión se limpia automáticamente y redirige a Login |
+| Rotación de dispositivo | Estado de la pantalla se conserva |
+| Evento sin imagen | Se muestra placeholder |
+| Lugar sin imagen | Se muestra placeholder |
 
 ## Limitaciones conocidas
 
-Por documentar.
+- **Inscripciones sin conexión**: la pantalla Perfil requiere internet para cargar "Mis inscripciones". Los datos de asistencia no se cachean localmente.
+- **Tiles del mapa**: osmdroid descarga los tiles de OpenStreetMap bajo demanda. Sin conexión, solo se ven los tiles ya almacenados en caché por el sistema.
+- **Imágenes de lugares**: los datos de prueba del backend no incluyen `imageUrl` para lugares; se muestra un placeholder en todos los casos.
+- **RF-10 (Eventos cercanos)**: requisito opcional; no implementado.
+- **Dispositivo físico**: cambiar `BASE_URL` a la IP LAN de la PC que corre el backend.
