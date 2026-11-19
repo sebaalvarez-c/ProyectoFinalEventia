@@ -1,4 +1,4 @@
-package com.example.proyectofinaleventia.ui.theme
+package com.example.proyecto_final_eventia.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

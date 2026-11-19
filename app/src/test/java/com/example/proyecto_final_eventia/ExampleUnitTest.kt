@@ -1,4 +1,4 @@
-package com.example.proyectofinaleventia
+package com.example.proyecto_final_eventia
 
 import org.junit.Test
 

@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ProyectoFinalEventia"
+rootProject.name = "Proyecto_Final_Eventia"
 include(":app")
  
