@@ -18,9 +18,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    // adb reverse tcp:8000 tcp:8000 tunnels localhost:8000 (emulator) → localhost:8000 (host).
-    // For a physical device use the host's LAN IP instead (e.g., 192.168.1.X).
-    private const val BASE_URL = "http://localhost:8000/api/"
+    private const val BASE_URL = "https://eventia.jmacboy.dev/api/"
 
     @Provides
     @Singleton

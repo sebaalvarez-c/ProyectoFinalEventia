@@ -25,25 +25,13 @@ Aplicación Android para descubrir eventos y lugares, desarrollada como proyecto
 
 ## Configuración de la API
 
-El backend es una API Node.js/Express que corre en la PC de desarrollo en el puerto 8000.
+La API corre en `https://eventia.jmacboy.dev/api`. No se necesita levantar un servidor local.
 
-### Emulador Android
-
-Usar el tunnel de ADB para que el emulador acceda a `localhost` de la PC:
-
-```bash
-adb reverse tcp:8000 tcp:8000
-```
-
-La URL base en `di/NetworkModule.kt` está configurada como:
+La URL base está configurada en `di/NetworkModule.kt`:
 
 ```kotlin
-private const val BASE_URL = "http://localhost:8000/api/"
+private const val BASE_URL = "https://eventia.jmacboy.dev/api/"
 ```
-
-### Dispositivo físico
-
-Reemplazar `localhost` con la IP local de la PC (ej. `192.168.1.X`) y actualizar `BASE_URL`.
 
 **Credenciales de prueba:**
 - Email: `ana@eventia.test`
@@ -53,9 +41,7 @@ Las solicitudes autenticadas envían `Authorization: Bearer <token>` automática
 
 ## Configuración del mapa
 
-El mapa usa **osmdroid** con un proxy de tiles propio en el backend. Los tiles se sirven en `GET /tiles/:z/:x/:y` y el backend los obtiene de ESRI World Street Map (gratuito, sin API key).
-
-Requiere que el backend esté corriendo y el tunnel ADB activo. No se necesita ninguna clave de API externa.
+El mapa usa **osmdroid** con tiles de ESRI World Street Map (gratuito, sin API key). Los tiles los sirve directamente la librería sin necesidad de un proxy local.
 
 ## Arquitectura
 

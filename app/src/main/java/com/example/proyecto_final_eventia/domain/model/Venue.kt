@@ -5,7 +5,7 @@ data class Venue(
     val name: String,
     val address: String,
     val description: String?,
-    val schedule: String?,
+    val openingHours: String?,
     val imageUrl: String?,
     val lat: Double?,
     val lng: Double?,
