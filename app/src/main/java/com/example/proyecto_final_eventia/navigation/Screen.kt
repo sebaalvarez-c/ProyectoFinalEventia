@@ -1,6 +1,7 @@
 package com.example.proyecto_final_eventia.navigation
 
 object Screen {
+    const val SPLASH = "splash"
     const val LOGIN = "login"
     const val REGISTER = "register"
     const val MAIN = "main"

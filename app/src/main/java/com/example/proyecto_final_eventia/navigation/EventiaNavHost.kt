@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.proyecto_final_eventia.ui.auth.LoginScreen
 import com.example.proyecto_final_eventia.ui.auth.RegisterScreen
+import com.example.proyecto_final_eventia.ui.splash.SplashScreen
 import com.example.proyecto_final_eventia.ui.eventdetail.EventDetailScreen
 import com.example.proyecto_final_eventia.ui.explore.ExploreScreen
 import com.example.proyecto_final_eventia.ui.favorites.FavoritesScreen
@@ -42,7 +43,7 @@ private data class BottomNavItem(
 )
 
 @Composable
-fun EventiaNavHost(startDestination: String = Screen.LOGIN, token: String? = null) {
+fun EventiaNavHost(token: String? = null) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -94,9 +95,19 @@ fun EventiaNavHost(startDestination: String = Screen.LOGIN, token: String? = nul
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = Screen.SPLASH,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(Screen.SPLASH) {
+                SplashScreen(
+                    onReady = { destination ->
+                        navController.navigate(destination) {
+                            popUpTo(Screen.SPLASH) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
             composable(
                 route = Screen.LOGIN_WITH_RETURN,
                 arguments = listOf(navArgument("returnRoute") {

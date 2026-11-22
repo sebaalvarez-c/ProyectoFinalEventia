@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import dagger.hilt.android.AndroidEntryPoint
 import com.example.proyecto_final_eventia.data.local.datastore.SessionDataStore
 import com.example.proyecto_final_eventia.navigation.EventiaNavHost
-import com.example.proyecto_final_eventia.navigation.Screen
 import com.example.proyecto_final_eventia.ui.theme.Proyecto_Final_EventiaTheme
 import javax.inject.Inject
 
@@ -25,8 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Proyecto_Final_EventiaTheme {
                 val token by sessionDataStore.token.collectAsState(initial = null)
-                val startDestination = if (token != null) Screen.MAIN else Screen.LOGIN
-                EventiaNavHost(startDestination = startDestination, token = token)
+                EventiaNavHost(token = token)
             }
         }
     }
